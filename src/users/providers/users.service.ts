@@ -6,6 +6,9 @@ import { User } from "../user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "../dtos/create-user.dto";
 
+/**
+ * Class to connect to user table
+ */
 @Injectable()
 export class UserService {
 	constructor(
