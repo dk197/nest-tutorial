@@ -1,4 +1,17 @@
-import { IsArray, IsEnum, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MinLength, ValidateNested } from "class-validator";
+import {
+	IsArray,
+	IsEnum,
+	IsISO8601,
+	IsJSON,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	IsUrl,
+	Matches,
+	MaxLength,
+	MinLength,
+	ValidateNested,
+} from "class-validator";
 import { Type } from "class-transformer";
 import { CreatePostMetaOptionsDto } from "./create-post-meta-options.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
@@ -9,6 +22,7 @@ export class CreatePostDto {
 	@ApiProperty()
 	@IsString()
 	@MinLength(4)
+	@MaxLength(512)
 	@IsNotEmpty()
 	title: string;
 
@@ -24,6 +38,7 @@ export class CreatePostDto {
 		description: "For example 'my-url'",
 	})
 	@IsString()
+	@MaxLength(256)
 	@IsNotEmpty()
 	@Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
 		message: 'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
@@ -52,6 +67,7 @@ export class CreatePostDto {
 
 	@ApiPropertyOptional()
 	@IsOptional()
+	@MaxLength(1024)
 	@IsUrl()
 	featuredImageUrl?: string;
 
