@@ -2,19 +2,19 @@ import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Po
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { GetUsersParamsDto } from "./dtos/get-users.params.dto";
 import { PatchUserDto } from "./dtos/patch-user.dto";
+import { UserService } from "./providers/users.service";
 
 @Controller("users")
 export class UsersController {
+	constructor(private readonly userService: UserService) {}
+
 	@Get("{/:id}")
 	public getUsers(
 		@Param() getUsersParamsDto: GetUsersParamsDto,
 		@Query("page", new DefaultValuePipe(10), ParseIntPipe) page: number,
-		@Query("limit", new DefaultValuePipe(1), ParseIntPipe) limit: number
+		@Query("limit", new DefaultValuePipe(1), ParseIntPipe) limit: number,
 	) {
-		console.log(getUsersParamsDto);
-		console.log(limit, typeof limit);
-		console.log(page, typeof page);
-		return "get to users endpoint";
+		return this.userService.findAll(getUsersParamsDto, limit, page);
 	}
 
 	@Post()
