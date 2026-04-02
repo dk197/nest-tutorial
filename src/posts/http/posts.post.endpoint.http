@@ -4,16 +4,15 @@ Content-Type: application/json
 {
     "title": "test",
     "postType": "post",
-    "slug": "test-post",
+    "slug": "test-post4",
     "status": "draft",
     "content": "test content",
     "featuredImageUrl": "www.dkdev.de/image",
-    "publishedOn": "2026-03-31T13:38:32+0000",
-    "tags": ["nestjs", "typescript"],
-    "metaOptions": [
-        {
-            "key": "testkey",
-            "value": "testvalue"
-        }
-    ]
+    "publishOn": "2026-03-31T13:38:32+0000",
+    //"tags": ["nestjs", "typescript"],
+    "metaOptions": {
+        "metaValue": "{\"sideBarEnabled\": true}"
+    },
+    "authorId": 1,
+    "tags": [2, 3] 
 }

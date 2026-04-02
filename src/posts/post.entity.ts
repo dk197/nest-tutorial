@@ -1,7 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PostType } from "./enums/postType.enum";
 import { PostStatus } from "./enums/postStatus.enum";
-import { CreatePostMetaOptionsDto } from "./dtos/create-post-meta-options.dto";
+import { MetaOption } from "src/meta-options/meta-option.entity";
+import { User } from "src/users/user.entity";
+import { Tag } from "src/tags/tag.entity";
 
 @Entity()
 export class Post {
@@ -56,15 +58,29 @@ export class Post {
 		length: 1024,
 		nullable: true,
 	})
-	featureImage?: string;
+	featuredImageUrl?: string;
 
 	@Column({
 		type: "timestamp",
 		nullable: true,
 	})
-	publishedOn?: Date;
+	publishOn?: Date;
 
-	tags?: string[];
+	// one post has only one meta option
+	@OneToOne(() => MetaOption, (metaOptions) => metaOptions.post, {
+		cascade: true,
+		eager: true,
+	})
+	metaOptions: MetaOption;
 
-	metaOptions?: CreatePostMetaOptionsDto[];
+	@ManyToOne(() => User, (user) => user.posts, {
+		eager: true, // fetch automatically author when fetching a post
+	})
+	author: User;
+
+	@ManyToMany(() => Tag, (tag) => tag.posts, {
+		eager: true,
+	})
+	@JoinTable()
+	tags?: Tag[];
 }

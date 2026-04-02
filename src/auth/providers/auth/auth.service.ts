@@ -7,7 +7,7 @@ export class AuthService {
 		@Inject(forwardRef(() => UserService))
 		private readonly userService: UserService,
 	) {}
-	public login(email: string, password: string, id: string) {
+	public login(email: string, password: string, id: number) {
 		const user = this.userService.findOneById(id);
 		return "token";
 	}

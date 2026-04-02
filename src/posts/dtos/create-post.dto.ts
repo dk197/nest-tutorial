@@ -1,6 +1,7 @@
 import {
 	IsArray,
 	IsEnum,
+	IsInt,
 	IsISO8601,
 	IsJSON,
 	IsNotEmpty,
@@ -13,7 +14,7 @@ import {
 	ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { CreatePostMetaOptionsDto } from "./create-post-meta-options.dto";
+import { CreatePostMetaOptionsDto } from "../../meta-options/dtos/create-post-meta-options.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { PostType } from "../enums/postType.enum";
 import { PostStatus } from "../enums/postStatus.enum";
@@ -79,31 +80,29 @@ export class CreatePostDto {
 	@IsOptional()
 	publishOn?: Date;
 
-	@ApiPropertyOptional()
+	@ApiPropertyOptional({
+		description: "an array of tag ids",
+		example: [1, 2],
+	})
 	@IsArray()
 	@IsOptional()
-	@IsString({ each: true })
-	@MinLength(3, { each: true })
-	tags?: string[];
+	@IsInt({ each: true })
+	tags?: number[];
 
 	@ApiPropertyOptional({
-		type: "array",
-		required: false,
-		items: {
-			type: "object",
-			properties: {
-				key: {
-					type: "string",
-				},
-				value: {
-					type: "string",
-				},
-			},
-		},
+		type: () => CreatePostMetaOptionsDto,
 	})
 	@IsOptional()
-	@IsArray()
 	@ValidateNested({ each: true })
 	@Type(() => CreatePostMetaOptionsDto)
-	metaOptions?: CreatePostMetaOptionsDto[];
+	metaOptions?: CreatePostMetaOptionsDto | null;
+
+	@ApiProperty({
+		type: "integer",
+		required: true,
+		example: 1,
+	})
+	@IsInt()
+	@IsNotEmpty()
+	authorId: number;
 }

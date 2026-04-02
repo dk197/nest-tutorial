@@ -1,0 +1,8 @@
+POST http://localhost:3333/tags
+Content-Type: application/json
+
+{
+    "name": "testtag4",
+    "slug": "tstslug4",
+    "description": "this is just a test4"
+}
