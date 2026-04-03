@@ -7,3 +7,23 @@ Content-Type: application/json
     "email": "dk@dk.de",
     "password": "test123@"
 }
+
+POST http://localhost:3333/users/create-many
+Content-Type: application/json
+
+{
+    "users": [
+        {
+            "firstName": "Domi",
+            "lastName": "DKI",
+            "email": "dk@dk.com",
+            "password": "test123!"
+        }, 
+        {
+            "firstName": "Domi",
+            "lastName": "DKI",
+            "email": "dk@dk.test",
+            "password": "test123!"
+        }
+    ]
+}
