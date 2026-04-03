@@ -1,4 +1,4 @@
-import { Body, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Body, Inject, Injectable, RequestTimeoutException } from "@nestjs/common";
 import { UserService } from "src/users/providers/users.service";
 import { CreatePostDto } from "../dtos/create-post.dto";
 import { Repository } from "typeorm";
@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { MetaOption } from "src/meta-options/meta-option.entity";
 import { TagsService } from "src/tags/services/tags.service";
 import { PatchPostDto } from "../dtos/patch-post.dto";
+import { Tag } from "src/tags/tag.entity";
 
 @Injectable()
 export class PostsService {
@@ -40,9 +41,9 @@ export class PostsService {
 		// });
 		// return await this.postRepository.save(post);
 
-		const author = await this.userService.findOneById(createPostDto.authorId);
-
 		const tags = await this.tagsService.findMultipleTags(createPostDto.tags ?? []);
+
+		const author = await this.userService.findOneById(createPostDto.authorId);
 
 		// with cascade
 		const { metaOptions, ...rest } = createPostDto;
@@ -64,9 +65,26 @@ export class PostsService {
 	}
 
 	public async update(patchPostDto: PatchPostDto) {
-		const tags = await this.tagsService.findMultipleTags(patchPostDto.tags ?? []);
-		const post = await this.postRepository.findOneBy({ id: patchPostDto.id });
-		if (!post) return;
+		let tags: Tag[] | null;
+		let post: Post | null;
+
+		try {
+			tags = await this.tagsService.findMultipleTags(patchPostDto.tags ?? []);
+		} catch (err) {
+			throw new RequestTimeoutException("unable to process your request");
+		}
+
+		// number of tags must be equal to the result of the db
+		if (patchPostDto.tags && patchPostDto.tags.length > 0 && !tags && patchPostDto.tags.length < patchPostDto.tags?.length)
+			throw new BadRequestException("please check your tag ids");
+
+		try {
+			post = await this.postRepository.findOneBy({ id: patchPostDto.id });
+		} catch (err) {
+			throw new RequestTimeoutException("unable to process your request");
+		}
+		if (!post) throw new BadRequestException("post id was not found");
+
 		post.title = patchPostDto.title ?? post.title;
 		post.content = patchPostDto.content ?? post.content;
 		post.status = patchPostDto.status ?? post.status;
@@ -77,6 +95,12 @@ export class PostsService {
 
 		post.tags = tags;
 
-		return await this.postRepository.save(post);
+		try {
+			await this.postRepository.save(post);
+		} catch (err) {
+			throw new RequestTimeoutException("unable to process your request");
+		}
+
+		return post;
 	}
 }
