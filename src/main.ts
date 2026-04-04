@@ -11,6 +11,9 @@ async function bootstrap() {
 			whitelist: true, // remove fields that are not specified in dto
 			forbidNonWhitelisted: true, // throw error if addidional property (not specified in dto) is sent
 			transform: true, // transforms dtos to types in the controller
+			transformOptions: {
+				enableImplicitConversion: true, // validation pipe converts type
+			},
 		}),
 	);
 
