@@ -9,6 +9,8 @@ import { type ConfigType } from "@nestjs/config";
 import profileConfig from "../config/profile.config";
 import { UsersCreateManyProvider } from "./users-create-many.provider";
 import { CreateManyUsersDto } from "../dtos/create-many-users.dto";
+import { CreateUserProvider } from "./create-user.provider";
+import { FindOneUserByEmailProvider } from "./find-one-user-by-email.provider";
 
 /**
  * Class to connect to user table
@@ -23,33 +25,12 @@ export class UserService {
 		@Inject(profileConfig.KEY)
 		private readonly profileConfigurarion: ConfigType<typeof profileConfig>,
 		private readonly usersCreateManyProvider: UsersCreateManyProvider,
+		private readonly createUserProvider: CreateUserProvider,
+		private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
 	) {}
 
 	public async createUser(createUserDto: CreateUserDto) {
-		let existingUser: User | null;
-		try {
-			existingUser = await this.usersRepository.findOne({
-				where: {
-					email: createUserDto.email,
-				},
-			});
-		} catch (err) {
-			throw new RequestTimeoutException("unable to process your request at the moment, please try later", {
-				description: "error connecting to the database",
-			});
-		}
-
-		if (existingUser) throw new BadRequestException("user already exists");
-
-		let newUser = this.usersRepository.create(createUserDto);
-		try {
-			newUser = await this.usersRepository.save(newUser);
-		} catch (err) {
-			throw new RequestTimeoutException("unable to process your request at the moment, please try later", {
-				description: "error connecting to the database",
-			});
-		}
-		return newUser;
+		return this.createUserProvider.createUser(createUserDto);
 	}
 
 	public findAll(getUserParamsDto: GetUsersParamsDto, limit: number, page: number) {
@@ -99,5 +80,9 @@ export class UserService {
 
 	public async createMany(createManyUsersDto: CreateManyUsersDto) {
 		return await this.usersCreateManyProvider.createMany(createManyUsersDto);
+	}
+
+	public async findOneByEmail(email: string) {
+		return await this.findOneUserByEmailProvider.findOneByEmail(email);
 	}
 }

@@ -23,7 +23,7 @@ Content-Type: application/json
             "firstName": "Domi",
             "lastName": "DKI",
             "email": "dk@dk.test",
-            "password": "test123!"
+            "password": "test123@"
         }
     ]
 }
