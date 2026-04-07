@@ -15,7 +15,6 @@ import { Paginated } from "src/common/pagination/interfaces/paginated.interface"
 @Injectable()
 export class PostsService {
 	constructor(
-		private readonly userService: UserService,
 		private readonly tagsService: TagsService,
 		@InjectRepository(Post)
 		private readonly postRepository: Repository<Post>,
@@ -33,31 +32,6 @@ export class PostsService {
 			this.postRepository,
 		);
 		return posts;
-	}
-
-	public async create(@Body() createPostDto: CreatePostDto) {
-		// without cascade
-		// let metaOptions = createPostDto.metaOptions ? this.metaOptionsRepository.create(createPostDto.metaOptions) : null;
-		// if (metaOptions) await this.metaOptionsRepository.save(metaOptions);
-		// let post = this.postRepository.create({
-		// 	...createPostDto,
-		// 	metaOptions: metaOptions ?? undefined,
-		// });
-		// return await this.postRepository.save(post);
-
-		const tags = await this.tagsService.findMultipleTags(createPostDto.tags ?? []);
-
-		const author = await this.userService.findOneById(createPostDto.authorId);
-
-		// with cascade
-		const { metaOptions, ...rest } = createPostDto;
-		let post = this.postRepository.create({
-			...rest,
-			metaOptions: metaOptions ?? undefined,
-			author: author ?? undefined,
-			tags: tags,
-		});
-		return await this.postRepository.save(post);
 	}
 
 	public async delete(id: number) {

@@ -25,7 +25,7 @@ export class CreatePostDto {
 	@MinLength(4)
 	@MaxLength(512)
 	@IsNotEmpty()
-	title: string;
+	title!: string;
 
 	@ApiProperty({
 		enum: PostType,
@@ -33,7 +33,7 @@ export class CreatePostDto {
 	})
 	@IsEnum(PostType)
 	@IsNotEmpty()
-	postType: PostType;
+	postType!: PostType;
 
 	@ApiProperty({
 		description: "For example 'my-url'",
@@ -44,7 +44,7 @@ export class CreatePostDto {
 	@Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
 		message: 'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
 	})
-	slug: string;
+	slug?: string;
 
 	@ApiProperty({
 		enum: PostStatus,
@@ -52,7 +52,7 @@ export class CreatePostDto {
 	})
 	@IsEnum(PostStatus)
 	@IsNotEmpty()
-	status: PostStatus;
+	status!: PostStatus;
 
 	@ApiPropertyOptional()
 	@IsOptional()
@@ -96,13 +96,4 @@ export class CreatePostDto {
 	@ValidateNested({ each: true })
 	@Type(() => CreatePostMetaOptionsDto)
 	metaOptions?: CreatePostMetaOptionsDto | null;
-
-	@ApiProperty({
-		type: "integer",
-		required: true,
-		example: 1,
-	})
-	@IsInt()
-	@IsNotEmpty()
-	authorId: number;
 }

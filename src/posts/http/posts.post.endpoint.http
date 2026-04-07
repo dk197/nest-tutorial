@@ -1,18 +1,17 @@
 POST http://localhost:3333/posts
 Content-Type: application/json
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsImVtYWlsIjoiZGtAZGsuZGUiLCJpYXQiOjE3NzU1NjIwNzUsImV4cCI6MTc3NTU2NTY3NSwiYXVkIjoibG9jYWxob3N0OjMwMDAiLCJpc3MiOiJsb2NhbGhvc3Q6MzAwMCJ9.b-d1nnsTOs8WBwkUdUQYL3DMNIAUwVzlVPnBTX_XiXw
 {
     "title": "test",
     "postType": "post",
-    "slug": "test-post4",
+    "slug": "test-post5",
     "status": "draft",
     "content": "test content",
     "featuredImageUrl": "www.dkdev.de/image",
-    "publishOn": "2026-03-31T13:38:32+0000",
+    //"publishOn": "2026-03-31",
     //"tags": ["nestjs", "typescript"],
     "metaOptions": {
         "metaValue": "{\"sideBarEnabled\": true}"
     },
-    "authorId": 1,
-    "tags": [2, 3] 
+    "tags": [2] 
 }
