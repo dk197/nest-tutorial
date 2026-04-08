@@ -18,6 +18,7 @@ export class SignInProvider {
 		let isEqual: boolean = false;
 
 		try {
+			if (!user.password) throw new Error("no pw");
 			isEqual = await this.hashingProvider.comparePassword(signInDto.password, user.password);
 		} catch (err) {
 			throw new RequestTimeoutException(err, {

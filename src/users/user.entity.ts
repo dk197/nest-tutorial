@@ -4,21 +4,21 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class User {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id!: number;
 
 	@Column({
 		type: "varchar",
 		length: 96,
 		nullable: false,
 	})
-	firstName: string;
+	firstName!: string;
 
 	@Column({
 		type: "varchar",
 		length: 96,
 		nullable: true,
 	})
-	lastName: string;
+	lastName?: string;
 
 	@Column({
 		type: "varchar",
@@ -26,15 +26,21 @@ export class User {
 		nullable: false,
 		unique: true,
 	})
-	email: string;
+	email!: string;
 
 	@Column({
 		type: "varchar",
 		length: 96,
-		nullable: false,
+		nullable: true,
 	})
-	password: string;
+	password?: string;
+
+	@Column({
+		type: "varchar",
+		nullable: true,
+	})
+	googleId?: string;
 
 	@OneToMany(() => Post, (post) => post.author)
-	posts: Post[];
+	posts?: Post[];
 }
