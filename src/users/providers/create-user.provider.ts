@@ -4,6 +4,7 @@ import { CreateUserDto } from "../dtos/create-user.dto";
 import { Repository } from "typeorm";
 import { HashingProvider } from "src/auth/providers/hashing.provider";
 import { InjectRepository } from "@nestjs/typeorm";
+import { MailService } from "src/mail/providers/mail.service";
 
 @Injectable()
 export class CreateUserProvider {
@@ -12,6 +13,7 @@ export class CreateUserProvider {
 		private readonly usersRepository: Repository<User>,
 		@Inject(forwardRef(() => HashingProvider))
 		private readonly hashingProvider: HashingProvider,
+		private readonly mailService: MailService,
 	) {}
 
 	public async createUser(createUserDto: CreateUserDto) {
@@ -38,10 +40,18 @@ export class CreateUserProvider {
 		try {
 			newUser = await this.usersRepository.save(newUser);
 		} catch (err) {
+			console.log("err at sending email", err);
 			throw new RequestTimeoutException("unable to process your request at the moment, please try later", {
 				description: "error connecting to the database",
 			});
 		}
+
+		try {
+			await this.mailService.sendUserWelcome(newUser);
+		} catch (err) {
+			throw new RequestTimeoutException(err);
+		}
+
 		return newUser;
 	}
 }
