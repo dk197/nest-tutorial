@@ -1,5 +1,6 @@
 import {
 	Body,
+	ClassSerializerInterceptor,
 	Controller,
 	DefaultValuePipe,
 	Get,
@@ -10,6 +11,7 @@ import {
 	Query,
 	SetMetadata,
 	UseGuards,
+	UseInterceptors,
 	ValidationPipe,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dtos/create-user.dto";
@@ -23,6 +25,7 @@ import { AuthType } from "src/auth/enums/auth-type.enum";
 
 @Controller("users")
 @ApiTags("Users")
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
 	constructor(private readonly userService: UserService) {}
 
