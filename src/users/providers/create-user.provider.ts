@@ -47,7 +47,9 @@ export class CreateUserProvider {
 		}
 
 		try {
-			await this.mailService.sendUserWelcome(newUser);
+			if (process.env.NODE_ENV !== "test") {
+				await this.mailService.sendUserWelcome(newUser);
+			}
 		} catch (err) {
 			throw new RequestTimeoutException(err);
 		}
